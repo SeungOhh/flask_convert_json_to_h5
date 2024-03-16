@@ -21,6 +21,11 @@ get_custom_objects().update({'relu6': relu6})
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/running', methods=['GET'])
+@cross_origin()
+def running():
+    return "Server is running"
+
 @app.route('/upload', methods=['POST'])
 @cross_origin()
 def upload():

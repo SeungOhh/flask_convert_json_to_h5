@@ -12,4 +12,5 @@ WORKDIR /app
 COPY . /app
 
 EXPOSE 5050
-CMD python ./index.py
+# CMD python ./index.py
+CMD gunicorn -w 2 -b 0.0.0.0:5050 index:app
