@@ -34,19 +34,19 @@ def upload():
     model_dir = os.path.join(temp_dir, "keras_model.h5")
     print(temp_dir)
 
-    # json 파일 저장
+    # json save
     file_json = request.files['model.json']
     file_json = json.load(file_json) # load stringified json
     with open(json_dir, 'w') as f:
         f.write(file_json + '\n')
     print('----------json-----------')
 
-    # bin 파일 저장
+    # bin save
     file_bin = request.files['model.weights.bin']
     file_bin.save(bin_dir)
     print('----------bin-----------')
 
-    # h5 파일로 변환
+    # h5 convert
     model = tfjs.converters.load_keras_model(json_dir)
     model.summary()
     model.save(model_dir)
