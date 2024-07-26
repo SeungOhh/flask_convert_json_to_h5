@@ -26,6 +26,10 @@ CORS(app)
 def running():
     return "Server is running"
 
+
+
+
+# h5 model download
 @app.route('/upload', methods=['POST'])
 @cross_origin()
 def upload():
@@ -56,9 +60,58 @@ def upload():
     model.summary()
     model.save(model_dir)
 
-
     return send_file(model_dir, as_attachment=True, download_name='keras_model.h5', mimetype='application/octet-stream')
     # return Response(200)
+
+
+
+
+
+# tflite model download
+@app.route('/upload_tflite', methods=['POST'])
+@cross_origin()
+def upload_tflite():
+    print("\n\n\n")
+    print(request.files)
+    print("\n\n\n")
+
+    temp_dir = tempfile.mkdtemp()
+    json_dir = os.path.join(temp_dir, 'model.json')
+    bin_dir = os.path.join(temp_dir, 'model.weights.bin')
+    model_dir = os.path.join(temp_dir, "keras_model.tflite")
+    print(temp_dir)
+
+    # json save
+    file_json = request.files['model.json']
+    file_json = json.load(file_json) # load stringified json
+    with open(json_dir, 'w') as f:
+        f.write(file_json + '\n')
+    print('----------json-----------')
+
+    # bin save
+    file_bin = request.files['model.weights.bin']
+    file_bin.save(bin_dir)
+    print('----------bin-----------')
+
+    # h5 convert
+    model = tfjs.converters.load_keras_model(json_dir)
+    # model.summary()
+    # model.save(model_dir)
+
+    print('----------tflite-----------')
+    # Convert the Keras model to a TFLite model
+    converter = tf.lite.TFLiteConverter.from_keras_model(model)
+    tflite_model = converter.convert()
+    with open(model_dir, 'wb') as f:
+        f.write(tflite_model)
+
+    return send_file(model_dir, as_attachment=True, download_name='keras_model.tflite', mimetype='application/octet-stream')
+    # return Response(200)
+
+
+
+
+
 
 if __name__ == '__main__':
     # Run the application on all network interfaces and port 5050
