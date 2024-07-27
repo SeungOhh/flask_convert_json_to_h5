@@ -7,14 +7,14 @@ Just running docker is fine or just running flask is also fine.
 python==3.7 is recommanded. 
 
 
-### To build
+### To build (flask only)
 ```
-docker build -t osy044/json_to_h5_converter:0.0.2 .
+docker build -t osy044/tfjs_converter:0.0.2 .
 ```
 
-### To run
+### To run (flask only)
 ```
-docker container run -d -p 5050:5050 osy044/json_to_h5_converter:0.0.2
+docker container run -d -p 5000:5000 osy044/tfjs_converter:0.0.2
 ```
 
 
